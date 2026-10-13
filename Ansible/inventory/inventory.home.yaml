@@ -1,0 +1,22 @@
+all:
+    children:
+        k3s:
+            vars:
+                ansible_ssh_private_key_file: ~/.ssh/ansible_lab
+            children:
+                k3s_control:
+                    hosts:
+                        cp-1:
+                            ansible_user: k3s-server-01
+                            ansible_host: 192.168.0.11
+                k3s_workers:
+                    hosts:
+                        worker-1:
+                            ansible_user: k3s-worker-01
+                            ansible_host: 192.168.0.12
+                        worker-2:
+                            ansible_user: k3s-worker-02
+                            ansible_host: 192.168.0.13
+                        worker-3:
+                            ansible_user: k3s-worker-03
+                            ansible_host: 192.168.0.14
