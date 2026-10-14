@@ -1,0 +1,32 @@
+- name: Set up groups and users for use
+  hosts: k3s
+  become: true
+
+  tasks:
+    - name: Ensure k8sops group exists
+      ansible.builtin.group:
+        name: k8sops
+        state: present
+
+    - name: Ensure kubeops user exists, and assigned to group
+      ansible.builtin.user:
+        name: kubeops
+        append: true
+        state: present
+        groups: k8sops
+
+    - name: Set up acces key (pubkey)
+      ansible.posix.authorized_key:
+        user: kubeops
+        state: present
+        path: /home/kubeops/.ssh/authorized_keys
+        key: "{{ lookup('file', '~/HomelabRepo/Ansible/files/kubeops_ed25519.pub') }}"
+
+    - name: Allow passwordless sudo
+      ansible.builtin.copy:
+        content: "kubeops ALL=(ALL) NOPASSWD: ALL\n"
+        dest: /etc/sudoers.d/kubeops
+        owner: root
+        group: root
+        mode: "0440"
+        validate: /usr/sbin/visudo -cf %s
