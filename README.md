@@ -1,4 +1,4 @@
-# HomelabRepo
+# Homelab
 
 Dokumentacija i automatizacija mog ličnog homelab-a — projekat kroz koji vežbam Linux, Ansible, Kubernetes, Docker, CI/CD... radeći na pravom hardveru umesto samo kroz tutoriale. Deployujem i dockerizujem sopstvene projekte (npr. `fitnessWebApp`), a plan je i GitOps u nekom trenutku.
 
