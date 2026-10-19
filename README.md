@@ -1,53 +1,53 @@
 # Homelab
 
-Dokumentacija i automatizacija mog ličnog homelab-a — projekat kroz koji vežbam Linux, Ansible, Kubernetes, Docker, CI/CD... radeći na pravom hardveru umesto samo kroz tutoriale. Deployujem i dockerizujem sopstvene projekte (npr. `fitnessWebApp`), a plan je i GitOps u nekom trenutku.
+Documentation and automation for my personal homelab — a project through which I practice Linux, Ansible, Kubernetes, Docker, CI/CD... by working on real hardware instead of only following tutorials. I deploy and dockerize my own projects (e.g. `fitnessWebApp`), and GitOps is planned at some point.
 
-## Šta je ovaj homelab
+## What this homelab is
 
-Jedan stariji nadogradjen laptop (Acer, Ryzen 7 5700U, 16 tredova, 19 GB RAM-a) na kome radi
-**Proxmox VE**, a na njemu virtuelne mašine koje čine lab:
+An older upgraded laptop (Acer, Ryzen 7 5700U, 16 threads, 19 GB RAM) running
+**Proxmox VE**, with virtual machines that make up the lab:
 
-| VM | Ime | IP | OS | Uloga |
-|----|-----|----|----|-------|
-| 100 | rocky9-sandbox | 192.168.0.6 | Rocky Linux 9 | jumphost / Ansible kontrolni čvor |
+| VM | Name | IP | OS | Role |
+|----|------|----|----|------|
+| 100 | rocky9-sandbox | 192.168.0.6 | Rocky Linux 9 | jumphost / Ansible control node |
 | 101 | k3s-server-01 | 192.168.0.11 | Ubuntu 24.04 | k3s control-plane |
 | 102 | k3s-worker-01 | 192.168.0.12 | Ubuntu 24.04 | k3s worker |
 | 103 | k3s-worker-02 | 192.168.0.13 | Ubuntu 24.04 | k3s worker |
 | 104 | k3s-worker-03 | 192.168.0.14 | Ubuntu 24.04 | k3s worker |
 
-Klaster: **k3s (Kubernetes v1.36)** — jedan control-plane + tri workera.
-Pristup sa bilo kog mesta preko **Tailscale** (subnet router na Proxmox hostu).
+Cluster: **k3s (Kubernetes v1.36)** — one control-plane + three workers.
+Accessible from anywhere via **Tailscale** (subnet router on the Proxmox host).
 
-## Struktura repa
+## Repository structure
 
 ```
 HomelabRepo/
-├── Ansible/          # automatizacija: inventory, playbooks, skripte
+├── Ansible/          # automation: inventory, playbooks, scripts
 │   ├── inventory/
-│   │   ├── inventory.home.yaml    # fiksni VM-ovi kod kuće (k3s_control, k3s_workers)
-│   │   └── inventory.aws_ec2.yaml # dynamic inventory — EC2 po tagu Project=ansible-lab
+│   │   ├── inventory.home.yaml    # static home VMs (k3s_control, k3s_workers)
+│   │   └── inventory.aws_ec2.yaml # dynamic inventory — EC2 instances by Project=ansible-lab tag
 │   ├── playbooks/
 │   └── scripts/
-├── Bash/             # shell skripte i vežbe
-└── Python/           # Python skripte, automatizacija, vežbe
+├── Bash/             # shell scripts and exercises
+└── Python/           # Python scripts, automation, exercises
 ```
 
-## Ansible — kako se koristi
+## Ansible — usage
 
-Kontrolni čvor je **rocky9-sandbox**. Iz ovog repa, sa sandboxa:
+The control node is **rocky9-sandbox**. From this repo, on the sandbox:
 
 ```bash
 cd ~/HomelabRepo/Ansible
-ansible all -i inventory/inventory.home.yaml -m ping          # provera da sve radi
-ansible k3s_workers -i inventory/inventory.home.yaml -m ping  # samo workeri
+ansible all -i inventory/inventory.home.yaml -m ping          # sanity check
+ansible k3s_workers -i inventory/inventory.home.yaml -m ping  # workers only
 ```
 
-AWS varijanta (dynamic inventory — hostovi se sami pronalaze po tagovima):
+AWS variant (dynamic inventory — hosts are discovered by tags):
 
 ```bash
 ansible all -i inventory/inventory.aws_ec2.yaml -m ping
 ```
 
-## Napomene
+## Notes
 
-- Sve tajne (ključevi, tokeni, AWS kredencijali) ostaju **van repa :)**
+- All secrets (keys, tokens, AWS credentials) stay **out of the repo :)**
