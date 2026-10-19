@@ -42,5 +42,5 @@ fi
 done
 
 if [[ -n "$alerti" ]];then
-    /home/rockylab/HomelabRepo/Bash/send-threshold-mail.sh "$alerti"
+    /usr/local/bin/send-threshold-mail.sh "$alerti"
 fi
