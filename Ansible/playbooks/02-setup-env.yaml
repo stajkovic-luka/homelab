@@ -9,7 +9,7 @@
 
     - name: Safe upgrade of system
       ansible.builtin.apt:
-        upgrade: yes
+        upgrade: true
 
     - name: Install required packages
       ansible.builtin.apt:

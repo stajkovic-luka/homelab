@@ -1,0 +1,52 @@
+- name: Set up monitoring on control node
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Move cluster-health script
+      ansible.builtin.copy:
+        src: ../../Bash/cluster-health.sh
+        dest: /usr/local/bin/cluster-health.sh
+        mode: "0755"
+        backup: true
+      become: true
+
+    - name: Move send-threshold-mail script
+      ansible.builtin.copy:
+        src: ../../Bash/send-threshold-mail.sh
+        dest: /usr/local/bin/send-threshold-mail.sh
+        mode: "0755"
+        backup: true
+      become: true
+
+    - name: Move monitoring script
+      ansible.builtin.copy:
+        src: ../../Bash/monitoring.sh
+        dest: /usr/local/bin/monitoring.sh
+        mode: "0755"
+        backup: true
+      become: true
+
+    - name: Setup cronjob for cluster health
+      ansible.builtin.cron:
+        backup: true
+        state: present
+        job: /usr/local/bin/cluster-health.sh
+        name: cluster-health
+        minute: "*/10"
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
+
+    - name: Setup cronjob for monitoring
+      ansible.builtin.cron:
+        backup: true
+        state: present
+        job: /usr/local/bin/monitoring.sh
+        name: monitoring
+        minute: "0"
+        hour: "*/2"
+        day: "*"
+        month: "*"
+        weekday: "*"
