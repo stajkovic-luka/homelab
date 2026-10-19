@@ -1,0 +1,27 @@
+- name: Set up environment for deploying applications
+  hosts: k3s
+  become: true
+
+  tasks:
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Safe upgrade of system
+      ansible.builtin.apt:
+        upgrade: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - qemu-guest-agent
+          - chrony
+          - htop
+          - vim
+        state: present
+
+    - name: Make sure time is synced
+      ansible.builtin.service:
+        name: chrony
+        state: started
+        enabled: true
