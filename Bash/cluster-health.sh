@@ -41,5 +41,6 @@ fi
 
 done
 
-# debug
-# echo "${alerti}"
+if [[ -n "$alerti" ]];then
+    /home/rockylab/HomelabRepo/Bash/send-threshold-mail.sh "$alerti"
+fi
