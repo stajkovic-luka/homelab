@@ -1,0 +1,4 @@
+# Klasifikacija fajlova za ansible-lint
+# inventory fajlovi nisu playbookovi — bez ovoga novi lint pravi load-failure
+kinds:
+  - inventory: Ansible/inventory/*.yaml
