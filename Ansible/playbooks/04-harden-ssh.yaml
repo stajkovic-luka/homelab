@@ -1,0 +1,28 @@
+- name: Set up SSH hardening
+  hosts: k3s
+  become: true
+
+  vars:
+    sshd_settings:
+      - key: "PermitRootLogin"
+        value: "no"
+      - key: "PasswordAuthentication"
+        value: "no"
+      - key: "MaxAuthTries"
+        value: "3"
+
+  tasks:
+    - name: Harden sshd config
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.key }}"
+        line: "^{{ item.key }} {{ item.value }}"
+        validate: "/usr/sbin/sshd -t -f %s"
+      loop: "{{ sshd_settings }}"
+      notify: Restart sshd
+
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
