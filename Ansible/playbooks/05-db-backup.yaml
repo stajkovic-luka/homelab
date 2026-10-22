@@ -1,0 +1,25 @@
+- name: Database backup deployment
+  hosts: localhost
+
+  tasks:
+    - name: Backup directory
+      ansible.builtin.file:
+        path: /opt/backup/mysql
+        state: directory
+        owner: rockylab
+        mode: "0755"
+      become: true
+
+    - name: Deploy db-backup.sh
+      ansible.builtin.copy:
+        src: ../scripts/db-backup.sh
+        dest: /usr/local/bin/db-backup.sh
+        mode: "0755"
+      become: true
+
+    - name: Schedule cronjob for 03:00 everyday
+      ansible.builtin.cron:
+        name: db-backup
+        minute: "0"
+        hour: "3"
+        job: "/usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1"
