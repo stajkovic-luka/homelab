@@ -1,2 +1,7 @@
 /Bash/tmp.sh
 /Bash/logs/*
+
+# Terraform
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform/
